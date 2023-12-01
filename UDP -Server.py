@@ -34,3 +34,20 @@ while True:
 
     # 循环接收文件数据，直到文件大小等于已接收的大小
     while received_size < file_size:
+        # 接收文件数据
+        data, client_address = server.recvfrom(1024)
+        # 写入文件
+        file.write(data)
+        # 更新已接收的文件大小
+        received_size += len(data)
+        # 打印接收进度
+        print(f"\r已接收{received_size/file_size*100:.2f}%，{received_size}/{file_size}", end="")
+
+    # 关闭文件
+    file.close()
+
+    # 打印接收完成的信息
+    print(f"\n文件{file_name}接收完成，保存在{save_path}")
+
+    # 向客户端发送一个确认信息
+    server.sendto(b"OK", client_address)
